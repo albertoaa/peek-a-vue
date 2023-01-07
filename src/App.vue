@@ -1,11 +1,13 @@
 <template>
   <h1>Peek a Vue</h1>
   <section class="game-board">
-    <Card v-for="card in cardList" :key="card.id" :value="card.value" />
+    <Card v-for="card in cardList" :key="card.id" :value="card.value" :visible="card.visible" :position="card.position"
+      @select-card="flipCard" />
   </section>
 </template>
 
 <script>
+import { ref } from 'vue';
 import Card from "./components/Card.vue";
 
 export default {
@@ -14,15 +16,22 @@ export default {
     Card,
   },
   setup() {
-    const cardList = [];
+    const cardList = ref([]);
+
     for (let i = 0; i < 16; i++) {
-      cardList.push({
+      cardList.value.push({
         id: i,
         value: i,
+        visible: false,
+        position: i
       });
     }
 
-    return { cardList };
+    const flipCard = (position) => {
+      cardList.value[position].visible = !cardList.value[position].visible;
+    };
+
+    return { cardList, flipCard };
   },
 };
 </script>
