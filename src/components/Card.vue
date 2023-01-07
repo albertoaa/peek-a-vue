@@ -1,5 +1,5 @@
 <template>
-  <div class="card">Card {{ id }} {{ value }}</div>
+  <div class="card">Card</div>
 </template>
 
 <script>
@@ -14,4 +14,7 @@ export default {
 
 
 <style scoped>
+.card {
+  border: 5px solid #ccc;
+}
 </style>

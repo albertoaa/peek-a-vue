@@ -1,6 +1,8 @@
 <template>
   <h1>Peek a Vue</h1>
-  <Card />
+  <section class="game-board">
+    <Card />
+  </section>
 </template>
 
 <script>
@@ -15,4 +17,21 @@ export default {
 </script>
 
 <style>
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+
+.game-board {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: 100px 100px 100px 100px;
+  grid-template-rows: 100px 100px 100px 100px;
+  grid-column-gap: 30px;
+  grid-row-gap: 30px;
+}
 </style>
