@@ -1,7 +1,7 @@
 <template>
   <h1>Peek a Vue</h1>
   <section class="game-board">
-    <Card />
+    <Card v-for="card in cardList" :key="card.id" :value="card.value" />
   </section>
 </template>
 
@@ -12,6 +12,17 @@ export default {
   name: "App",
   components: {
     Card,
+  },
+  setup() {
+    const cardList = [];
+    for (let i = 0; i < 16; i++) {
+      cardList.push({
+        id: i,
+        value: i,
+      });
+    }
+
+    return { cardList };
   },
 };
 </script>

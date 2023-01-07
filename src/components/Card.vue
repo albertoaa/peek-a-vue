@@ -1,19 +1,21 @@
 <template>
-  <div class="card">Card</div>
+  <div class="card">{{ value }}</div>
 </template>
 
 <script>
 export default {
   name: "Card-Component",
   props: {
-    id: Number,
-    value: String,
+    value: {
+      type: Number,
+      required: true,
+    },
   },
 };
 </script>
 
 
-<style scoped>
+<style>
 .card {
   border: 5px solid #ccc;
 }
