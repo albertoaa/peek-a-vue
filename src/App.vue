@@ -84,10 +84,12 @@ export default {
     };
 
     const flipCard = (payload) => {
-      cardList.value[payload.position].visible = !cardList.value[payload.position].visible;
+      cardList.value[payload.position].visible = true;
 
       if (userSelection.value[0]) {
-        userSelection.value[1] = payload;
+        if (userSelection.value[0].position === payload.position && userSelection.value[0].faceValue === payload.faceValue)
+          return;
+        else userSelection.value[1] = payload;
       } else {
         userSelection.value[0] = payload;
       }
@@ -107,7 +109,7 @@ export default {
             setTimeout(() => {
               cardList.value[cardOne.position].visible = false;
               cardList.value[cardTwo.position].visible = false;
-            }, 2000);
+            }, 1000);
           }
 
           userSelection.value.length = 0;
