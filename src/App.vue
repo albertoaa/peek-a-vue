@@ -27,7 +27,7 @@ export default {
   },
   setup() {
     const cardList = ref([]);
-    const cardItems = [1, 2, 3, 4, 5, 6, 7, 8];
+    const cardItems = ['bat', 'candy', 'cauldron', 'cupcake', 'ghost', 'pumpkin', 'moon', 'witch-hat'];
 
     cardItems.forEach((item) => {
       cardList.value.push({
