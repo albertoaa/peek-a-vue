@@ -2,12 +2,13 @@
   <h1>Peek a Vue</h1>
   <section class="game-board">
     <Card v-for="card in cardList" :key="card.id" :value="card.value" :visible="card.visible" :position="card.position"
-      @select-card="flipCard" />
+      :matched="card.matched" @select-card="flipCard" />
   </section>
+  <h2>{{ status }}</h2>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import Card from "./components/Card.vue";
 
 export default {
@@ -17,21 +18,50 @@ export default {
   },
   setup() {
     const cardList = ref([]);
+    const userSelection = ref([]);
+    const status = ref('');
 
     for (let i = 0; i < 16; i++) {
       cardList.value.push({
         id: i,
         value: i,
         visible: false,
-        position: i
+        position: i,
+        matched: false
       });
     }
 
-    const flipCard = (position) => {
-      cardList.value[position].visible = !cardList.value[position].visible;
+    const flipCard = (payload) => {
+      cardList.value[payload.position].visible = !cardList.value[payload.position].visible;
+
+      if (userSelection.value[0]) {
+        userSelection.value[1] = payload;
+      } else {
+        userSelection.value[0] = payload;
+      }
     };
 
-    return { cardList, flipCard };
+    watch(userSelection, (currentValue) => {
+      if (currentValue.length == 2) {
+        const cardOne = currentValue[0];
+        const cardTwo = currentValue[1];
+
+        if (cardOne.faceValue === cardTwo.faceValue) {
+          status.value = 'You found a match!';
+          cardList.value[cardOne.position].matched = true;
+          cardList.value[cardTwo.position].matched = true;
+        } else {
+          status.value = 'No match, try again!';
+          cardList.value[cardOne.position].visible = false;
+          cardList.value[cardTwo.position].visible = false;
+        }
+
+
+        userSelection.value.length = 0;
+      }
+    }, { deep: true })
+
+    return { cardList, flipCard, userSelection, status };
   },
 };
 </script>
