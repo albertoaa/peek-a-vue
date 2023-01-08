@@ -5,11 +5,13 @@
       :matched="card.matched" @select-card="flipCard" />
   </section>
   <h2>{{ status }}</h2>
+  <button @click='shuffleCards'>Shuffle Cards</button>
 </template>
 
 <script>
 import { computed, ref, watch } from 'vue';
 import Card from "./components/Card.vue";
+import _ from 'lodash';
 
 export default {
   name: "App",
@@ -32,11 +34,15 @@ export default {
       return remainingCards.length / 2;
     });
 
+    const shuffleCards = () => {
+      cardList.value = _.shuffle(cardList.value);
+    }
+
     for (let i = 0; i < 16; i++) {
       cardList.value.push({
         id: i,
-        value: 6,
-        visible: false,
+        value: i,
+        visible: true,
         position: i,
         matched: false
       });
@@ -72,7 +78,7 @@ export default {
       }
     }, { deep: true })
 
-    return { cardList, flipCard, userSelection, status };
+    return { cardList, flipCard, userSelection, status, shuffleCards };
   },
 };
 </script>
