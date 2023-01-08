@@ -1,5 +1,6 @@
 <template>
-  <h1>Peek a Vue</h1>
+  <h1 class="sr-only">Peek-a-Vue</h1>
+  <img src="/images/peek-a-vue-title.png" alt="peek-a-vue-title" class="title" />
   <section class="game-board">
     <Card
       v-for="card in cardList"
@@ -12,7 +13,7 @@
     />
   </section>
   <h2>{{ status }}</h2>
-  <button @click="restartGame">Restart Game</button>
+  <button @click="restartGame" class="button"><img src="/images/restart.svg" alt="Restart Icon" />Restart Game</button>
 </template>
 
 <script>
@@ -72,11 +73,12 @@ export default {
     };
 
     const restartGame = () => {
+      shuffleCards();
       cardList.value = cardList.value.map((card, index) => {
         return {
           ...card,
           position: index,
-          visible: true,
+          visible: false,
           matched: false,
         };
       });
@@ -154,5 +156,36 @@ h1 {
   grid-template-rows: repeat(4, 130px);
   grid-column-gap: 30px;
   grid-row-gap: 30px;
+}
+
+.button {
+  background-color: orange;
+  color: white;
+  padding: 0.75rem 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-weight: bold;
+}
+
+.button img {
+  padding-right: 5px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.title {
+  margin-bottom: 30px;
 }
 </style>
