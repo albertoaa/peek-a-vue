@@ -1,25 +1,42 @@
 <template>
   <h1>Peek a Vue</h1>
   <section class="game-board">
-    <Card v-for="card in cardList" :key="card.id" :value="card.value" :visible="card.visible" :position="card.position"
-      :matched="card.matched" @select-card="flipCard" />
+    <Card
+      v-for="card in cardList"
+      :key="card.id"
+      :value="card.value"
+      :visible="card.visible"
+      :position="card.position"
+      :matched="card.matched"
+      @select-card="flipCard"
+    />
   </section>
   <h2>{{ status }}</h2>
-  <button @click='shuffleCards'>Shuffle Cards</button>
+  <button @click="restartGame">Restart Game</button>
 </template>
 
 <script>
 import { computed, ref, watch } from 'vue';
-import Card from "./components/Card.vue";
+import Card from './components/Card.vue';
 import _ from 'lodash';
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     Card,
   },
   setup() {
     const cardList = ref([]);
+    for (let i = 0; i < 16; i++) {
+      cardList.value.push({
+        id: i,
+        value: i,
+        visible: false,
+        position: i,
+        matched: false,
+      });
+    }
+
     const userSelection = ref([]);
     const status = computed(() => {
       if (remainingPairs.value === 0) {
@@ -29,24 +46,26 @@ export default {
       }
     });
     const remainingPairs = computed(() => {
-      const remainingCards = cardList.value.filter(card => !card.matched);
+      const remainingCards = cardList.value.filter((card) => !card.matched);
 
       return remainingCards.length / 2;
     });
 
     const shuffleCards = () => {
       cardList.value = _.shuffle(cardList.value);
-    }
+    };
 
-    for (let i = 0; i < 16; i++) {
-      cardList.value.push({
-        id: i,
-        value: i,
-        visible: true,
-        position: i,
-        matched: false
+    const restartGame = () => {
+      shuffleCards();
+      cardList.value = cardList.value.map((card, index) => {
+        return {
+          ...card,
+          position: index,
+          visible: false,
+          matched: false,
+        };
       });
-    }
+    };
 
     const flipCard = (payload) => {
       cardList.value[payload.position].visible = !cardList.value[payload.position].visible;
@@ -58,34 +77,35 @@ export default {
       }
     };
 
-    watch(userSelection, (currentValue) => {
-      if (currentValue.length == 2) {
-        const cardOne = currentValue[0];
-        const cardTwo = currentValue[1];
+    watch(
+      userSelection,
+      (currentValue) => {
+        if (currentValue.length == 2) {
+          const cardOne = currentValue[0];
+          const cardTwo = currentValue[1];
 
-        if (cardOne.faceValue === cardTwo.faceValue) {
-          status.value = 'You found a match!';
-          cardList.value[cardOne.position].matched = true;
-          cardList.value[cardTwo.position].matched = true;
-        } else {
-          status.value = 'No match, try again!';
-          cardList.value[cardOne.position].visible = false;
-          cardList.value[cardTwo.position].visible = false;
+          if (cardOne.faceValue === cardTwo.faceValue) {
+            cardList.value[cardOne.position].matched = true;
+            cardList.value[cardTwo.position].matched = true;
+          } else {
+            cardList.value[cardOne.position].visible = false;
+            cardList.value[cardTwo.position].visible = false;
+          }
+
+          userSelection.value.length = 0;
         }
+      },
+      { deep: true }
+    );
 
-
-        userSelection.value.length = 0;
-      }
-    }, { deep: true })
-
-    return { cardList, flipCard, userSelection, status, shuffleCards };
+    return { cardList, flipCard, userSelection, status, shuffleCards, restartGame };
   },
 };
 </script>
 
 <style>
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
