@@ -150,8 +150,8 @@ h1 {
 .game-board {
   display: grid;
   justify-content: center;
-  grid-template-columns: 100px 100px 100px 100px;
-  grid-template-rows: 100px 100px 100px 100px;
+  grid-template-columns: repeat(4, 130px);
+  grid-template-rows: repeat(4, 130px);
   grid-column-gap: 30px;
   grid-row-gap: 30px;
 }
