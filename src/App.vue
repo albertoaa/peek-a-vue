@@ -27,15 +27,31 @@ export default {
   },
   setup() {
     const cardList = ref([]);
-    for (let i = 0; i < 16; i++) {
+    const cardItems = [1, 2, 3, 4, 5, 6, 7, 8];
+
+    cardItems.forEach((item) => {
       cardList.value.push({
-        id: i,
-        value: i,
-        visible: false,
-        position: i,
+        id: item,
+        value: item,
+        visible: true,
+        position: null,
         matched: false,
       });
-    }
+      cardList.value.push({
+        id: item,
+        value: item,
+        visible: true,
+        position: null,
+        matched: false,
+      });
+    });
+
+    cardList.value = cardList.value.map((card, index) => {
+      return {
+        ...card,
+        position: index,
+      };
+    });
 
     const userSelection = ref([]);
     const status = computed(() => {
@@ -56,15 +72,15 @@ export default {
     };
 
     const restartGame = () => {
-      shuffleCards();
       cardList.value = cardList.value.map((card, index) => {
         return {
           ...card,
           position: index,
-          visible: false,
+          visible: true,
           matched: false,
         };
       });
+      console.log(cardList.value);
     };
 
     const flipCard = (payload) => {
