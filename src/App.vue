@@ -1,6 +1,10 @@
 <template>
   <h1 class="sr-only">Peek-a-Vue</h1>
   <img src="/images/peek-a-vue-title.png" alt="peek-a-vue-title" class="title" />
+  <section class="description">
+    <p>Welcome to Peek-a-Vue!</p>
+    <p>A card matching game powered by Vue.js 3!</p>
+  </section>
   <transition-group tag="section" class="game-board" name="shuffle-card">
     <Card
       v-for="card in cardList"
@@ -12,13 +16,15 @@
       @select-card="flipCard"
     />
   </transition-group>
-  <h2>{{ status }}</h2>
-  <button @click="restartGame" class="button"><img src="/images/restart.svg" alt="Restart Icon" />Restart Game</button>
+  <h2 class="status">{{ status }}</h2>
+  <button v-if="newPlayer" @click="startGame" class="button"><img src="/images/play.svg" alt="Play Icon" />Start Game</button>
+  <button v-else @click="restartGame" class="button"><img src="/images/restart.svg" alt="Restart Icon" />Restart Game</button>
 </template>
 
 <script>
 import { computed, ref, watch } from 'vue';
 import Card from './components/Card.vue';
+import { launchConfetti } from './utilities/confetti.js';
 import _ from 'lodash';
 
 export default {
@@ -27,6 +33,7 @@ export default {
     Card,
   },
   setup() {
+    const newPlayer = ref(true);
     const cardList = ref([]);
     const cardItems = ['bat', 'candy', 'cauldron', 'cupcake', 'ghost', 'pumpkin', 'moon', 'witch-hat'];
 
@@ -41,7 +48,7 @@ export default {
       cardList.value.push({
         value: item,
         variant: 2,
-        visible: false,
+        visible: true,
         position: null,
         matched: false,
       });
@@ -53,6 +60,11 @@ export default {
         position: index,
       };
     });
+
+    const startGame = () => {
+      newPlayer.value = false;
+      restartGame();
+    };
 
     const userSelection = ref([]);
     const status = computed(() => {
@@ -94,6 +106,12 @@ export default {
       }
     };
 
+    watch(remainingPairs, (currentValue) => {
+      if (currentValue === 0) {
+        launchConfetti();
+      }
+    });
+
     watch(
       userSelection,
       (currentValue) => {
@@ -117,7 +135,7 @@ export default {
       { deep: true }
     );
 
-    return { cardList, flipCard, userSelection, status, restartGame };
+    return { cardList, flipCard, userSelection, status, restartGame, startGame, newPlayer };
   },
 };
 </script>
@@ -155,15 +173,33 @@ h1 {
   grid-row-gap: 30px;
 }
 
+.description {
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 20px;
+}
+
+.description p {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.description p:last-child {
+  margin-bottom: 30px;
+}
+
 .button {
   background-color: orange;
   color: white;
-  padding: 0.75rem 0.5rem;
+  padding: 0.75rem 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
   font-weight: bold;
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 1.1rem;
+  border: 0;
+  border-radius: 10px;
 }
 
 .button img {
@@ -188,5 +224,9 @@ h1 {
 
 .shuffle-card-move {
   transition: transform 0.8s ease-in;
+}
+
+.status {
+  font-family: 'Titillium Web', sans-serif;
 }
 </style>
